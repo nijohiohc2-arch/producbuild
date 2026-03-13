@@ -348,6 +348,20 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+      align-items: center;
+    }
+
+    .bonus-plus {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--subtitle-color);
+      margin: 0 5px;
+      opacity: 0;
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
     }
 
     .lotto-ball {
@@ -746,7 +760,15 @@
         }
       }
 
-      return numbers.sort((a, b) => a - b);
+      numbers.sort((a, b) => a - b);
+
+      let bonus;
+      while (true) {
+        bonus = Math.floor(Math.random() * max) + 1;
+        if (!numbers.includes(bonus)) break;
+      }
+
+      return { numbers, bonus };
     }
 
     function getBallClass(num) {
@@ -771,20 +793,27 @@
     function generateFiveSets() {
       const result = document.getElementById("result");
       let html = "";
-      let delayIndex = 0;
+      let globalDelay = 0;
 
       for (let i = 1; i <= 5; i++) {
-        const set = generateLottoSet();
-        const balls = set.map(num => {
-          const ballHTML = createBallHTML(num, delayIndex * 0.12);
-          delayIndex++;
-          return ballHTML;
+        const { numbers, bonus } = generateLottoSet();
+        const ballsHTML = numbers.map(num => {
+          const ball = createBallHTML(num, globalDelay * 0.1);
+          globalDelay++;
+          return ball;
         }).join("");
+
+        const bonusDelay = globalDelay * 0.1;
+        globalDelay++;
 
         html += `
           <div class="set-card">
             <div class="set-label">추천 ${i}세트</div>
-            <div class="balls-row">${balls}</div>
+            <div class="balls-row">
+              ${ballsHTML}
+              <div class="bonus-plus" style="animation-delay: ${bonusDelay}s;">+</div>
+              ${createBallHTML(bonus, bonusDelay + 0.1)}
+            </div>
           </div>
         `;
       }
