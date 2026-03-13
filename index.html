@@ -502,6 +502,29 @@
       box-shadow: 0 5px 15px rgba(255, 179, 0, 0.3);
     }
 
+    /* Comments Section Styles */
+    .comments-section {
+      margin-top: 48px;
+      padding: 32px 24px;
+      border-radius: 26px;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      backdrop-filter: blur(8px);
+    }
+
+    .comments-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 24px;
+      text-align: center;
+      color: #ffb300;
+    }
+
+    body.light-mode .comments-title {
+      color: #b58a00;
+    }
+
     .guide {
       text-align: center;
       color: var(--subtitle-color);
@@ -674,6 +697,21 @@
         </div>
         <button type="submit" class="btn-submit">문의 보내기</button>
       </form>
+    </section>
+
+    <!-- Comments Section (Disqus) -->
+    <section class="comments-section">
+      <div class="comments-title">댓글 및 의견</div>
+      <div id="disqus_thread"></div>
+      <script>
+          (function() { 
+          var d = document, s = d.createElement('script');
+          s.src = 'https://allen-9.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+          })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     </section>
   </div>
 
