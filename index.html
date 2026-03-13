@@ -420,6 +420,88 @@
       }
     }
 
+    /* Partnership Form Styles */
+    .partnership-section {
+      margin-top: 48px;
+      padding: 32px 24px;
+      border-radius: 26px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--card-shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .form-title {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #ffb300;
+    }
+
+    body.light-mode .form-title {
+      color: #b58a00;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--subtitle-color);
+    }
+
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: rgba(255,255,255,0.05);
+      color: var(--text-color);
+      font-family: inherit;
+      font-size: 15px;
+      transition: all 0.2s ease;
+    }
+
+    body.light-mode .form-input, 
+    body.light-mode .form-textarea {
+      background: rgba(0,0,0,0.03);
+    }
+
+    .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-color: #ffd84d;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .form-textarea {
+      height: 120px;
+      resize: vertical;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #ffd84d, #ffb300);
+      color: #111;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 179, 0, 0.3);
+    }
+
     .guide {
       text-align: center;
       color: var(--subtitle-color);
@@ -572,6 +654,26 @@
           <div class="guide">추천 버튼을 눌러 번호 5세트를 확인하세요.</div>
         </div>
       </div>
+    </section>
+
+    <!-- Partnership Form Section -->
+    <section class="partnership-section">
+      <div class="form-title">제휴 및 문의</div>
+      <form action="https://formspree.io/f/mgonyjzz" method="POST">
+        <div class="form-group">
+          <label class="form-label" for="name">성함 / 업체명</label>
+          <input class="form-input" type="text" name="name" id="name" placeholder="홍길동" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">이메일 주소</label>
+          <input class="form-input" type="email" name="email" id="email" placeholder="example@email.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="message">문의 내용</label>
+          <textarea class="form-textarea" name="message" id="message" placeholder="제휴 관련 문의 내용을 입력해주세요." required></textarea>
+        </div>
+        <button type="submit" class="btn-submit">문의 보내기</button>
+      </form>
     </section>
   </div>
 
