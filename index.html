@@ -1,14 +1,568 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+  <title>입체형 블랙 로또 추천기</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Pretendard", "Noto Sans KR", sans-serif;
+      color: white;
+      background:
+        radial-gradient(circle at top, rgba(255, 215, 0, 0.12), transparent 18%),
+        radial-gradient(circle at 20% 20%, rgba(0, 200, 255, 0.10), transparent 20%),
+        radial-gradient(circle at 80% 30%, rgba(255, 0, 120, 0.08), transparent 18%),
+        linear-gradient(180deg, #030303 0%, #0a0a0a 45%, #121212 100%);
+      overflow-x: hidden;
+    }
+
+    .floating-balls {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-ball {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.16;
+      filter: blur(10px);
+      animation: floatBall linear infinite;
+    }
+
+    .floating-ball:nth-child(1) {
+      width: 120px;
+      height: 120px;
+      left: 2%;
+      top: 5%;
+      background: radial-gradient(circle at 30% 30%, #fff3a6, #b58a00 75%);
+      animation-duration: 16s;
+    }
+
+    .floating-ball:nth-child(2) {
+      width: 150px;
+      height: 150px;
+      right: 2%;
+      top: 8%;
+      background: radial-gradient(circle at 30% 30%, #d5ebff, #3b82f6 75%);
+      animation-duration: 18s;
+    }
+
+    .floating-ball:nth-child(3) {
+      width: 120px;
+      height: 120px;
+      left: 12%;
+      bottom: 10%;
+      background: radial-gradient(circle at 30% 30%, #ffc9e2, #b00055 75%);
+      animation-duration: 14s;
+    }
+
+    .floating-ball:nth-child(4) {
+      width: 160px;
+      height: 160px;
+      right: 8%;
+      bottom: 8%;
+      background: radial-gradient(circle at 30% 30%, #d8ffd8, #1f7a31 75%);
+      animation-duration: 20s;
+    }
+
+    @keyframes floatBall {
+      0% { transform: translateY(0) translateX(0) scale(1); }
+      50% { transform: translateY(-18px) translateX(8px) scale(1.04); }
+      100% { transform: translateY(0) translateX(0) scale(1); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: min(1100px, 92%);
+      margin: 0 auto;
+      padding: 40px 0 64px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 30px 20px 24px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 999px;
+      font-size: 14px;
+      color: #ffe07a;
+      background: rgba(255,255,255,0.04);
+      margin-bottom: 16px;
+      box-shadow: 0 0 22px rgba(255, 217, 92, 0.08);
+      backdrop-filter: blur(6px);
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1.08;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+      text-shadow:
+        0 0 20px rgba(255, 215, 0, 0.14),
+        0 6px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .subtitle {
+      color: rgba(255,255,255,0.75);
+      font-size: 16px;
+      line-height: 1.75;
+      margin-bottom: 28px;
+    }
+
+    .machine-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 26px 0 18px;
+    }
+
+    .machine-card {
+      position: relative;
+      width: min(560px, 100%);
+      padding: 30px 24px 36px;
+      border-radius: 32px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03)),
+        linear-gradient(180deg, rgba(20,20,20,0.96), rgba(8,8,8,0.92));
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow:
+        0 30px 60px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.16),
+        inset 0 -20px 40px rgba(0,0,0,0.3),
+        0 0 50px rgba(255,255,255,0.04);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+
+    .machine-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 15%, rgba(255,255,255,0.16), transparent 20%),
+        radial-gradient(circle at 80% 20%, rgba(255,0,120,0.10), transparent 24%),
+        radial-gradient(circle at 30% 85%, rgba(0,180,255,0.10), transparent 24%);
+      pointer-events: none;
+    }
+
+    .machine-card::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      width: 260px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,0,0,0.45), rgba(0,0,0,0.02) 70%);
+      filter: blur(10px);
+      pointer-events: none;
+    }
+
+    .machine-svg {
+      position: relative;
+      z-index: 1;
+      display: block;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin: 24px 0 32px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      padding: 16px 30px;
+      border-radius: 16px;
+      font-size: 18px;
+      font-weight: 800;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px) scale(1.01);
+    }
+
+    .btn:active {
+      transform: translateY(1px) scale(0.995);
+    }
+
+    .btn-generate {
+      color: #111;
+      background: linear-gradient(90deg, #ffd84d, #ffb300);
+      box-shadow:
+        0 8px 22px rgba(255, 193, 7, 0.35),
+        0 0 20px rgba(255, 214, 79, 0.22);
+    }
+
+    .btn-reset {
+      color: white;
+      background: linear-gradient(90deg, #444, #222);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow:
+        0 8px 22px rgba(0, 0, 0, 0.35),
+        0 0 20px rgba(255, 255, 255, 0.04);
+    }
+
+    .result-panel {
+      margin-top: 16px;
+      padding: 28px 20px;
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow:
+        0 10px 40px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(8px);
+    }
+
+    .result-title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 22px;
+      color: #fff3b0;
+      text-shadow: 0 0 14px rgba(255, 227, 122, 0.12);
+    }
+
+    .sets {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .set-card {
+      padding: 18px 16px;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow:
+        0 10px 25px rgba(0,0,0,0.25),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .set-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.78);
+    }
+
+    .balls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .lotto-ball {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 800;
+      color: white;
+      position: relative;
+      opacity: 0;
+      transform: scale(0.3) translateY(30px);
+      box-shadow:
+        inset -6px -10px 14px rgba(0,0,0,0.22),
+        inset 5px 8px 12px rgba(255,255,255,0.18),
+        0 10px 18px rgba(0,0,0,0.34);
+    }
+
+    .lotto-ball::before {
+      content: "";
+      position: absolute;
+      top: 9px;
+      left: 12px;
+      width: 14px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.32);
+      filter: blur(1px);
+    }
+
+    .ball-yellow {
+      background: radial-gradient(circle at 30% 30%, #fff4ad, #f4b400 72%);
+      color: #222;
+    }
+
+    .ball-blue {
+      background: radial-gradient(circle at 30% 30%, #d6efff, #1e88e5 72%);
+    }
+
+    .ball-red {
+      background: radial-gradient(circle at 30% 30%, #ffd2cf, #e53935 72%);
+    }
+
+    .ball-gray {
+      background: radial-gradient(circle at 30% 30%, #f3f3f3, #8d99ae 72%);
+    }
+
+    .ball-green {
+      background: radial-gradient(circle at 30% 30%, #ddffd8, #2e7d32 72%);
+    }
+
+    @keyframes popBall {
+      0% {
+        opacity: 0;
+        transform: scale(0.3) translateY(30px);
+      }
+      60% {
+        opacity: 1;
+        transform: scale(1.15) translateY(-8px);
+      }
+      80% {
+        transform: scale(0.95) translateY(2px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .guide {
+      text-align: center;
+      color: rgba(255,255,255,0.62);
+      margin-top: 18px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    @media (min-width: 800px) {
+      .sets {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .set-card:last-child {
+        grid-column: 1 / -1;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+  <div class="floating-balls">
+    <div class="floating-ball"></div>
+    <div class="floating-ball"></div>
+    <div class="floating-ball"></div>
+    <div class="floating-ball"></div>
+  </div>
+
+  <div class="container">
+    <section class="hero">
+      <div class="badge">LUCKY LOTTO MACHINE</div>
+      <h1>입체형 블랙 로또 추천기</h1>
+      <p class="subtitle">
+        추천 버튼을 누르면 번호 공이 하나씩 튀어나옵니다.<br>
+        리셋 버튼으로 번호를 지우고 다시 추천할 수 있습니다.
+      </p>
+
+      <div class="machine-wrap">
+        <div class="machine-card">
+          <svg class="machine-svg" viewBox="0 0 560 320" width="100%" aria-label="입체적인 로또 머신 이미지">
+            <defs>
+              <radialGradient id="glassMain" cx="38%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.42"/>
+                <stop offset="45%" stop-color="#cfe8ff" stop-opacity="0.18"/>
+                <stop offset="100%" stop-color="#8cc8ff" stop-opacity="0.06"/>
+              </radialGradient>
+
+              <radialGradient id="glassShine" cx="30%" cy="20%" r="45%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.55"/>
+                <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+              </radialGradient>
+
+              <linearGradient id="metalTop" x1="0" x2="1">
+                <stop offset="0%" stop-color="#8f8f8f"/>
+                <stop offset="50%" stop-color="#c7c7c7"/>
+                <stop offset="100%" stop-color="#6c6c6c"/>
+              </linearGradient>
+
+              <linearGradient id="metalDark" x1="0" x2="1">
+                <stop offset="0%" stop-color="#2b2b2b"/>
+                <stop offset="50%" stop-color="#555"/>
+                <stop offset="100%" stop-color="#1f1f1f"/>
+              </linearGradient>
+
+              <linearGradient id="metalBase" x1="0" x2="1">
+                <stop offset="0%" stop-color="#111"/>
+                <stop offset="50%" stop-color="#2e2e2e"/>
+                <stop offset="100%" stop-color="#090909"/>
+              </linearGradient>
+
+              <radialGradient id="shadowSoft" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(0,0,0,0.45)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+              </radialGradient>
+
+              <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="6" result="blur"/>
+                <feMerge>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+
+              <filter id="dropShadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000" flood-opacity="0.35"/>
+              </filter>
+            </defs>
+
+            <ellipse cx="280" cy="285" rx="120" ry="22" fill="url(#shadowSoft)" />
+            <circle cx="280" cy="112" r="92" fill="rgba(255,255,255,0.04)" filter="url(#softGlow)" />
+
+            <g filter="url(#dropShadow)">
+              <circle cx="280" cy="112" r="82" fill="url(#glassMain)" stroke="rgba(255,255,255,0.38)" stroke-width="3"/>
+              <circle cx="280" cy="112" r="76" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="2"/>
+              <ellipse cx="252" cy="78" rx="42" ry="26" fill="url(#glassShine)" />
+              <path d="M225 55 C245 30, 300 25, 330 60" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="3" stroke-linecap="round"/>
+            </g>
+
+            <ellipse cx="258" cy="145" rx="44" ry="12" fill="rgba(0,0,0,0.16)" />
+
+            <g>
+              <circle cx="248" cy="100" r="22" fill="#f4c20d" />
+              <circle cx="286" cy="84" r="20" fill="#1e88e5" />
+              <circle cx="319" cy="114" r="22" fill="#ea4335" />
+              <circle cx="256" cy="142" r="20" fill="#9aa4b2" />
+              <circle cx="300" cy="148" r="21" fill="#2e7d32" />
+
+              <circle cx="241" cy="93" r="6" fill="rgba(255,255,255,0.32)" />
+              <circle cx="280" cy="78" r="5" fill="rgba(255,255,255,0.28)" />
+              <circle cx="313" cy="107" r="6" fill="rgba(255,255,255,0.28)" />
+              <circle cx="250" cy="136" r="5" fill="rgba(255,255,255,0.26)" />
+              <circle cx="294" cy="141" r="5" fill="rgba(255,255,255,0.24)" />
+
+              <text x="248" y="107" text-anchor="middle" font-size="18" font-weight="800" fill="#111">7</text>
+              <text x="286" y="90" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">18</text>
+              <text x="319" y="120" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">29</text>
+              <text x="256" y="148" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">34</text>
+              <text x="300" y="154" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">42</text>
+            </g>
+
+            <g filter="url(#dropShadow)">
+              <rect x="215" y="188" width="130" height="28" rx="14" fill="url(#metalTop)" />
+              <rect x="188" y="212" width="184" height="20" rx="10" fill="url(#metalDark)" />
+            </g>
+
+            <g filter="url(#dropShadow)">
+              <rect x="148" y="230" width="264" height="34" rx="17" fill="url(#metalBase)" stroke="rgba(255,255,255,0.18)" stroke-width="2"/>
+              <rect x="154" y="236" width="252" height="22" rx="11" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="1.5"/>
+            </g>
+
+            <path d="M170 244 H390" stroke="rgba(255,255,255,0.10)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-generate" onclick="generateFiveSets()">번호 5세트 추천</button>
+        <button class="btn btn-reset" onclick="resetNumbers()">리셋</button>
+      </div>
+    </section>
+
+    <section class="result-panel">
+      <div class="result-title">추천 번호</div>
+      <div class="sets" id="result">
+        <div class="set-card">
+          <div class="set-label">아직 추천 전입니다</div>
+          <div class="guide">추천 버튼을 눌러 번호 5세트를 확인하세요.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function generateLottoSet(count = 6, max = 45) {
+      const numbers = [];
+
+      while (numbers.length < count) {
+        const num = Math.floor(Math.random() * max) + 1;
+        if (!numbers.includes(num)) {
+          numbers.push(num);
+        }
+      }
+
+      return numbers.sort((a, b) => a - b);
+    }
+
+    function getBallClass(num) {
+      if (num >= 1 && num <= 10) return "ball-yellow";
+      if (num >= 11 && num <= 20) return "ball-blue";
+      if (num >= 21 && num <= 30) return "ball-red";
+      if (num >= 31 && num <= 40) return "ball-gray";
+      return "ball-green";
+    }
+
+    function createBallHTML(num, delay) {
+      return `
+        <div
+          class="lotto-ball ${getBallClass(num)}"
+          style="animation: popBall 0.55s ease-out forwards; animation-delay: ${delay}s;"
+        >
+          ${num}
+        </div>
+      `;
+    }
+
+    function generateFiveSets() {
+      const result = document.getElementById("result");
+      let html = "";
+      let delayIndex = 0;
+
+      for (let i = 1; i <= 5; i++) {
+        const set = generateLottoSet();
+        const balls = set.map(num => {
+          const ballHTML = createBallHTML(num, delayIndex * 0.12);
+          delayIndex++;
+          return ballHTML;
+        }).join("");
+
+        html += `
+          <div class="set-card">
+            <div class="set-label">추천 ${i}세트</div>
+            <div class="balls-row">${balls}</div>
+          </div>
+        `;
+      }
+
+      result.innerHTML = html;
+    }
+
+    function resetNumbers() {
+      const result = document.getElementById("result");
+      result.innerHTML = `
+        <div class="set-card">
+          <div class="set-label">번호가 초기화되었습니다</div>
+          <div class="guide">다시 추천 버튼을 눌러 새로운 번호를 받아보세요.</div>
+        </div>
+      `;
+    }
+  </script>
 </body>
-</html><!-- Last sync: Fri Mar 13 09:50:51 AM UTC 2026 -->
+</html>
